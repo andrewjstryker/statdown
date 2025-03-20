@@ -1,0 +1,12 @@
+^renv$
+^renv\.lock$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^\.github$
+^\.vscode$
+^Makefile$
+^generate-help.awk$
+^test/testthat/figures/
+^docs/$
