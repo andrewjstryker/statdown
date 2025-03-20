@@ -1,27 +1,40 @@
 # knugo
 
-**A minimal R package for integrating knitr output directly into a Hugo-based site.**
-The goal of _knugo_ is to keep the workflow “Hugo-centric,” while ensuring that R code, plots, and htmlwidgets can be rendered seamlessly and included in Hugo posts or pages—without needing **blogdown**, **rmarkdown**, or other heavier layers like **Quarto**.
+**A minimal R package for integrating knitr output directly into a Hugo-based
+site.** The goal of _knugo_ is to keep the workflow “Hugo-centric,” while
+ensuring that R code, plots, and htmlwidgets can be rendered seamlessly and
+included in Hugo posts or pages—without needing **blogdown**, **rmarkdown**, or
+other heavier layers like **Quarto**.
 
 ## Why knugo?
 
-- **Lightweight:** Just enough code to handle knitting R code and managing htmlwidget dependencies.
-- **Hugo-Centric:** Allows you to leverage all of Hugo’s built-in features (shortcodes, layouts, archetypes) without additional rmarkdown/pandoc layers.
-- **Familiar:** Under the hood, it still relies on **knitr**, so code chunks, figures, and tables behave as you’d expect in an R Markdown-like environment.
-- **Flexible:** You control when and how `.Rmd` files are knit, and how their output is merged into your Hugo `content/` directory.
+- **Lightweight:** Just enough code to handle knitting R code and managing
+  htmlwidget dependencies.
+- **Hugo-Centric:** Allows you to leverage all of Hugo’s built-in features
+  (shortcodes, layouts, archetypes) without additional rmarkdown/pandoc layers.
+- **Familiar:** Under the hood, it still relies on **knitr**, so code chunks,
+  figures, and tables behave as you’d expect in an R Markdown-like environment.
+- **Flexible:** You control when and how `.Rmd` files are knit, and how their
+  output is merged into your Hugo `content/` directory.
 
 ## How It Works
 
 1. **knitr Wrapper**
-   - A minimal function that sets up `knitr::opts_chunk` and optionally overrides certain knitr hooks so your code, figures, and tables are correctly rendered for Hugo.
+   - A minimal function that sets up `knitr::opts_chunk` and optionally
+     overrides certain knitr hooks so your code, figures, and tables are
+     correctly rendered for Hugo.
    - Produces either `.md` or standalone `.html` fragments.
 
 2. **htmlwidget Support**
-   - A custom `knit_print()` method detects `htmlwidget` objects (e.g., `leaflet`, `plotly`, `DT`) and ensures they are emitted as functional HTML snippets.
+   - A custom `knit_print()` method detects `htmlwidget` objects (e.g.,
+     `leaflet`, `plotly`, `DT`) and ensures they are emitted as functional HTML
+     snippets.
 
 3. **Dependency Management**
-   - Collects and places JS/CSS files for htmlwidgets in a designated Hugo-friendly location (e.g., `static/libs/`).
-   - Ensures the knitted output references those libraries correctly, so widgets render in the final site.
+   - Collects and places JS/CSS files for htmlwidgets in a designated
+     Hugo-friendly location (e.g., `static/libs/`).
+   - Ensures the knitted output references those libraries correctly, so
+     widgets render in the final site.
 
 ### Comparing knugo, blogdown, and Quarto
 
@@ -49,31 +62,42 @@ flowchart LR
 ```
 
 - **knugo**:
-  1. You manually knit or run a small `build_site()` function that calls **knitr**.
-  2. knugo moves (and/or references) the generated files in `content/` and places dependencies in `static/`.
+  1. You manually knit or run a small `build_site()` function that calls
+     **knitr**.
+  2. knugo moves (and/or references) the generated files in `content/` and
+     places dependencies in `static/`.
   3. You run `hugo`, which builds the final static site.
 
 - **blogdown**:
   1. It automatically uses knitr/rmarkdown behind the scenes.
-  2. It manages front matter, shortcodes, widget dependencies, and triggers Hugo builds—more tooling, less manual control.
+  2. It manages front matter, shortcodes, widget dependencies, and triggers
+     Hugo builds—more tooling, less manual control.
 
 - **Quarto**:
-  1. Quarto can produce complete websites by itself or integrate with other static site generators.
+  1. Quarto can produce complete websites by itself or integrate with other
+     static site generators.
   2. Typically, though, it bypasses Hugo or reuses some aspects of it.
-  3. Heavier than a direct knitr approach but has many advanced features (cross-references, citations, etc.).
+  3. Heavier than a direct knitr approach but has many advanced features
+     (cross-references, citations, etc.).
 
 ## Project Roadmap
 
-1. [ ] **Knitr Wrapper**
-   - [ ] Configure knitr to produce `.md` or `.html` with minimal overhead.
-   - [ ] Proof of concept: render a static plot (e.g., using **svglite**).
+1. [X] **Knitr Wrapper**
+   - [X] Configure knitr to produce `.md`
+   - [X] Call knitr render method
+   - [X] Test that generate:
+     - [X] SVG file from a plot
+     - [X] Kable table
 
 2. [ ] **HTML Widget Integration**
    - [ ] Add a `knit_print()` method for `htmlwidget` objects.
-   - [ ] Proof: a widget like **plotly** or **leaflet** is included as a proper HTML snippet in the knitted output.
+   - [ ] Proof: a widget like **plotly** or **leaflet** is included as a proper
+     HTML snippet in the knitted output.
 
 3. **Dependency Management**
-   - [ ] Extract JS/CSS dependencies (e.g., from `htmlwidgets::getDependency()`) and place them in Hugo’s `static/` folder (or a subdirectory).
+   - [ ] Extract JS/CSS dependencies (e.g., from
+     `htmlwidgets::getDependency()`) and place them in Hugo’s `static/` folder
+     (or a subdirectory).
    - [ ] Update references in the knitted output so the widget works.
    - [ ] Proof: the widget renders without any missing script or stylesheet errors.
 
