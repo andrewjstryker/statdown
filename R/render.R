@@ -22,6 +22,9 @@
 #' # Render quietly
 #' knugo_render("content/post/example.Rmarkdown", quiet = TRUE)
 knugo_render <- function(input, quiet = FALSE) {
+  # ensure required packages are present
+  validate_environment()
+
   output <- sub("\\.(Rmd|Rmarkdown)$", ".md", input, ignore.case = TRUE)
 
   set_required_options()
