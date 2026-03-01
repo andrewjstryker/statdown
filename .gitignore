@@ -63,6 +63,9 @@ tests/testthat/figures/
 /doc/
 /Meta/
 
+# Claude Code
+.claude/
+
 # Editor swap / backup files
 *.swp
 *.swo

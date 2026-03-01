@@ -13,3 +13,8 @@
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
+^DESIGN\.md$
+^TODO\.md$
+^example-.*\.Rmd$
+^tools$
+^\.claude$
