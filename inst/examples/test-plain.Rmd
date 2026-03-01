@@ -1,8 +1,8 @@
 ---
-title: "knugo Test File"
+title: "knugo Test File - Plain"
 ---
 
-# knugo Test File -- Plain
+# knugo Test File
 
 This document serves as a test case for the **knugo** package, demonstrating
 the package handles standard R code and output.
@@ -12,4 +12,4 @@ x <- 1 + 2
 x
 ```
 
-End of test.
+End of test file.

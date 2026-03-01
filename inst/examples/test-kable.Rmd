@@ -1,0 +1,16 @@
+---
+title: "knugo Test File"
+---
+
+# knugo Test File
+
+This document serves as a test case for the **knugo** package, demonstrating
+the package handles Kable tables.
+
+```{r kable-table, echo=TRUE}
+library(knitr)
+# Create a table with a caption
+kable(head(mtcars), caption = "Table: First 6 rows of mtcars")
+``
+
+End of test file.

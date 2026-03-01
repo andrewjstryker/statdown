@@ -1,152 +1,122 @@
-# knugo
+# statdown
 
-**A minimal R package for integrating knitr output directly into a Hugo-based
-site.** The goal of _knugo_ is to keep the workflow “Hugo-centric,” while
-ensuring that R code, plots, and htmlwidgets can be rendered seamlessly and
-included in Hugo posts or pages—without needing **blogdown**, **rmarkdown**, or
-other heavier layers like **Quarto**.
+**Use R in your static site — without replacing your static site generator.**
 
-## Why knugo?
+statdown renders `.Rmd` files to CommonMark `.md` that Hugo, Jekyll, Eleventy,
+or any other SSG can consume directly. No Pandoc, no second HTML engine, no
+shortcode workarounds. Your SSG stays in charge; R just provides the
+computed content.
 
-- **Lightweight:** Just enough code to handle knitting R code and managing
-  htmlwidget dependencies.
-- **Hugo-Centric:** Allows you to leverage all of Hugo’s built-in features
-  (shortcodes, layouts, archetypes) without additional rmarkdown/pandoc layers.
-- **Familiar:** Under the hood, it still relies on **knitr**, so code chunks,
-  figures, and tables behave as you’d expect in an R Markdown-like environment.
-- **Flexible:** You control when and how `.Rmd` files are knit, and how their
-  output is merged into your Hugo `content/` directory.
+## The problem
 
-## How It Works
+Tools like **blogdown** and **Quarto** solve R + website by pulling the
+website into R's toolchain. blogdown routes output through Pandoc before Hugo
+sees it, which means two HTML engines process every page. Shortcodes must be
+guarded against Pandoc. Templates behave differently depending on whether
+content came from `.Rmd` or `.md`. Quarto goes further and replaces the SSG
+entirely.
 
-1. **knitr Wrapper**
-   - A minimal function that sets up `knitr::opts_chunk` and optionally
-     overrides certain knitr hooks so your code, figures, and tables are
-     correctly rendered for Hugo.
-   - Produces either `.md` or standalone `.html` fragments.
+These are good tools, but they work best when R *is* the center of your site.
+If you're a blogger who happens to use R — someone who already has a Hugo
+theme, a build pipeline, and opinions about how your site works — they ask you
+to give up control you don't want to give up.
 
-2. **htmlwidget Support**
-   - A custom `knit_print()` method detects `htmlwidget` objects (e.g.,
-     `leaflet`, `plotly`, `DT`) and ensures they are emitted as functional HTML
-     snippets.
+## statdown's approach
 
-3. **Dependency Management**
-   - Collects and places JS/CSS files for htmlwidgets in a designated
-     Hugo-friendly location (e.g., `static/libs/`).
-   - Ensures the knitted output references those libraries correctly, so
-     widgets render in the final site.
+statdown goes the other direction: just enough R scaffolding to produce
+Markdown your SSG already understands.
 
-### Comparing knugo, blogdown, and Quarto
+```
+.Rmd → knitr → .md → your SSG → site
+```
 
-#### High-Level Diagram
+- **One engine.** knitr evaluates R code and produces CommonMark. Your SSG
+  processes that Markdown with its own templates and shortcodes. No Pandoc
+  in the middle.
+- **htmlwidgets work.** Interactive widgets (DT, leaflet, plotly) are rendered
+  as inline HTML with their CSS/JS dependencies managed by
+  [depkit](https://github.com/andrewjstryker/depkit) — deduplicated, copied
+  to your asset directory, and served via CDN with SRI integrity by default.
+- **Your SSG stays in charge.** Front matter, shortcodes, templates, and build
+  steps are all your SSG's business. statdown doesn't touch them.
+
+### Comparing approaches
 
 ```mermaid
 flowchart LR
 
-    subgraph K[knugo Flow]
-    A1(R Markdown) --> A2(knugo)
-    A2 --> A3(knitr)
-    A3 --> A4(Hugo)
+    subgraph K[statdown]
+    A1(.Rmd) --> A2(knitr)
+    A2 --> A3(.md)
+    A3 --> A4(SSG)
     A4 --> A5(Site)
     end
 
-    subgraph B[blogdown Flow]
-    B1(R Markdown) --> B2(blogdown)
-    B2 --> B3(knitr)
-    B3 --> B4(Rmarkdown)
-    B4 --> B5(Pandoc)
-    B5 --> B6(Hugo)
-    B6 --> B7(Site)
+    subgraph B[blogdown]
+    B1(.Rmd) --> B2(knitr)
+    B2 --> B3(Pandoc)
+    B3 --> B4(Hugo)
+    B4 --> B5(Site)
     end
 
+    subgraph Q[Quarto]
+    Q1(.qmd) --> Q2(knitr)
+    Q2 --> Q3(Pandoc)
+    Q3 --> Q4(Site)
+    end
 ```
 
-- **knugo**:
-  1. You manually knit or run a small `build_site()` function that calls
-     **knitr**.
-  2. knugo moves (and/or references) the generated files in `content/` and
-     places dependencies in `static/`.
-  3. You run `hugo`, which builds the final static site.
+## Usage
 
-- **blogdown**:
-  1. It automatically uses knitr/rmarkdown behind the scenes.
-  2. It manages front matter, shortcodes, widget dependencies, and triggers
-     Hugo builds—more tooling, less manual control.
+```r
+library(statdown)
 
-- **Quarto**:
-  1. Quarto can produce complete websites by itself or integrate with other
-     static site generators.
-  2. Typically, though, it bypasses Hugo or reuses some aspects of it.
-  3. Heavier than a direct knitr approach but has many advanced features
-     (cross-references, citations, etc.).
+# Render an .Rmd to .md
+statdown_render("posts/my-analysis.Rmd")
 
-## Project Roadmap
+# Custom asset directory and URL prefix
+statdown_render("posts/my-analysis.Rmd",
+  output_root = "static/libs",
+  url_root = "/libs")
 
-1. [X] **Knitr Wrapper**
-   - [X] Configure knitr to produce `.md`
-   - [X] Call knitr render method
-   - [X] Test that generate:
-     - [X] SVG file from a plot
-     - [X] Kable table
+# Serve all widget assets locally (no CDN)
+statdown_render("posts/my-analysis.Rmd", cdn = FALSE)
+```
 
-2. [ ] **HTML Widget Integration**
-   - [ ] Add a `knit_print()` method for `htmlwidget` objects.
-   - [ ] Proof: a widget like **plotly** or **leaflet** is included as a proper
-     HTML snippet in the knitted output.
+The output `.md` contains:
+- CSS `<link>` tags at the top (if htmlwidgets are used)
+- Markdown content with inline HTML for widgets
+- JS `<script>` tags at the bottom (with CDN + SRI + local fallback)
 
-3. **Dependency Management**
-   - [ ] Extract JS/CSS dependencies (e.g., from
-     `htmlwidgets::getDependency()`) and place them in Hugo’s `static/` folder
-     (or a subdirectory).
-   - [ ] Update references in the knitted output so the widget works.
-   - [ ] Proof: the widget renders without any missing script or stylesheet errors.
+Drop it into your SSG's content directory and build as usual.
 
-4. **Workflow Automation** (Future)
-   - [ ] Optionally add a `build_site()` function or script that:
-     - [ ] Finds all relevant R/`.Rmd` files,
-     - [ ] Knits them,
-     - [ ] Copies output to `content/`,
-     - [ ] Calls `hugo`.
-
-## Example Usage (Hypothetical)
+## Installation
 
 ```r
 # install.packages("remotes")
-# remotes::install_github("yourusername/knugo")
-
-library(knugo)
-
-# Hypothetical usage:
-knugo::knugo_render("my-post.Rmd", output = "content/posts/my-post.md")
-# This:
-# 1. Knits my-post.Rmd
-# 2. Writes the final .md file to content/posts/my-post.md
-# 3. Manages any htmlwidget dependencies in static/libs or similar
+remotes::install_github("andrewjstryker/statdown")
 ```
-
-Then run:
-```bash
-hugo
-```
-to build the final site.
 
 ## FAQ
 
-1. **Do I need to handle front matter in `.Rmd`?**
-   - Not necessarily. You can rely on Hugo’s archetypes or manually insert front matter in your knitted result.
+**Who is this for?**
+Bloggers who use a static site generator and sometimes need R — not R users
+who need a website. If you're happy with Quarto or blogdown, keep using them.
 
-2. **Can I embed Hugo shortcodes?**
-   - Yes. knitr generally passes unescaped Markdown or HTML through. As long as you don’t accidentally interpret shortcodes as code, they should work fine.
+**Why not blogdown with `.Rmarkdown` files?**
+blogdown's `.Rmarkdown` path avoids Pandoc, but you still inherit blogdown's
+opinions about directory structure, Hugo integration, and build workflow.
+statdown is a single function with no opinions about your site.
 
-3. **Does knugo replace blogdown or Quarto?**
-   - Not for everyone. blogdown and Quarto provide more functionality and convenience. knugo is for those who want a minimal pipeline that remains tightly Hugo-centric and who don’t mind manually managing some details.
+**What about Quarto?**
+Quarto is excellent for R-centric sites, books, and documents. If you want
+your site generator to understand R natively, use Quarto. If you want your
+existing SSG to stay in charge, use statdown.
+
+**Do I need to handle front matter?**
+statdown passes front matter through unchanged. Use whatever your SSG expects.
 
 ## Contributing
 
-- **Issues & Ideas**: Please open an issue if you have problems or suggestions for improvements.
-- **Pull Requests**: Contributions are welcome, especially for additional widget types or improved CLI tooling.
-
----
-
-Enjoy a fully **Hugo-centric** yet **R-capable** blogging workflow with **knugo**!
-
+- **Issues & Ideas**: Please open an issue if you have problems or suggestions.
+- **Pull Requests**: Contributions are welcome.

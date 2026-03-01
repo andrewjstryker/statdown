@@ -1,0 +1,51 @@
+# _pkgdown.yml for statdown
+
+# The URL where the site will be published
+url: https://andrewjstryker.github.io/statdown/
+
+destination: docs
+
+# Site-wide template settings
+template:
+  bootstrap: 5
+  bootswatch: litera
+
+# Navbar configuration
+navbar:
+  structure:
+    left: [intro, reference, articles, design, news]
+    right: [github]
+  components:
+    design:
+      text: Design
+      href: DESIGN.html
+    github:
+      icon: fa-github
+      href: https://github.com/andrewjstryker/statdown
+      aria-label: GitHub repository
+
+# Home page settings
+home:
+  title: statdown
+  subtitle: "Use R in your static site without replacing your static site generator"
+
+# Reference (function docs) section
+reference:
+  - title: "Render"
+    desc: Render R Markdown files to CommonMark.
+    contents:
+      - statdown_render
+  - title: "htmlwidget support"
+    desc: Custom rendering for htmlwidget objects.
+    contents:
+      - knit_print.htmlwidget
+  - title: "Environment"
+    desc: Validate the runtime environment.
+    contents:
+      - validate_environment
+  - title: "Package"
+    contents:
+      - statdown
+  - title: "internal"
+    contents:
+      - ".onLoad"

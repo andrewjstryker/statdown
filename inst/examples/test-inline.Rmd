@@ -1,0 +1,12 @@
+  ---
+title: "knugo Test File"
+---
+
+# knugo Test File
+
+This document serves as a test case for the **knugo** package, demonstrating
+the package handles inline R code.
+
+For instance, the sum of 1 through 10 is `r sum(1:10)`.
+
+End of test file.

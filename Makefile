@@ -14,7 +14,6 @@ all: test pkgdown #> Run tests and build pkgdown website (default)
 install_deps: #> Install required packages for development
 	R -e "install.packages(c('devtools', 'testthat', 'pkgdown'), repos = 'https://cloud.r-project.org')"
 
-
 .PHONY: snapshot
 snapshot: #> Scan for package versions
 	R -e "renv::snapshot()"
@@ -35,7 +34,8 @@ test: #> Run tests using testthat via devtools
 check: build #> Check the built package
 	R CMD check $$(ls -t *.tar.gz | head -n 1)
 
-.PHONY: document #> Update documentation and NAMESPACE using roxygen2
+.PHONY: document
+document: #> Update documentation and NAMESPACE using roxygen2
 	R -e "devtools::document()"
 
 .PHONY: pkgdown

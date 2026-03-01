@@ -1,0 +1,18 @@
+  ---
+title: "knugo Test File - Plots"
+---
+
+# knugo Test File
+
+This document serves as a test case for the **knugo** package, demonstrating
+the package handles plots.
+
+```{r ggplot-svglite, fig.width=6, fig.height=4, echo=TRUE}
+library(ggplot2)
+# Create a scatter plot of mpg vs weight
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  ggtitle("Scatterplot of mpg vs. weight")
+```
+
+End of test file.

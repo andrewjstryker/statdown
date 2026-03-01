@@ -60,3 +60,10 @@ rsconnect/
 
 # intermediate test files from testing
 tests/testthat/figures/
+/doc/
+/Meta/
+
+# Editor swap / backup files
+*.swp
+*.swo
+*~

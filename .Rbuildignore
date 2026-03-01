@@ -10,3 +10,6 @@
 ^generate-help.awk$
 ^test/testthat/figures/
 ^docs/$
+^doc$
+^Meta$
+^_pkgdown\.yml$

@@ -1,15 +1,29 @@
-Package: knugo
-Title: What the Package Does (One Line, Title Case)
+Package: statdown
+Title: Use R in Your Static Site Without Replacing Your Static Site Generator
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R:
+    person("Andrew", "Stryker", , "axs@sdf.org", role = c("aut", "cre"))
+Description: Renders R Markdown files to CommonMark that any static site
+    generator can consume directly — no Pandoc, no second HTML engine.
+    Handles htmlwidget dependencies (deduplication, CDN delivery, SRI
+    integrity) via 'depkit' so interactive widgets work without giving up
+    control of your site's build pipeline.
+License: MIT + file LICENSE
+URL: https://andrewjstryker.github.io/statdown/,
+    https://github.com/andrewjstryker/statdown
+BugReports: https://github.com/andrewjstryker/statdown/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Imports:
-    knitr,
-    svglite
+    depkit,
+    htmltools,
+    knitr
+Suggests:
+    rmarkdown,
+    svglite,
+    testthat (>= 3.0.0)
+Remotes:
+    andrewjstryker/depkit
+VignetteBuilder: knitr

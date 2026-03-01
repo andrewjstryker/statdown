@@ -1,0 +1,17 @@
+---
+title: "statdown Test File - HTML Widgets"
+---
+
+# statdown Test File
+
+This document serves as a test case for the **statdown** package, demonstrating
+the package handles htmlwidgets.
+
+```{r htmlwidget-example, echo=FALSE}
+# Load DT package (make sure it's in your package dependencies)
+library(DT)
+# Create a simple interactive data table
+datatable(iris)
+```
+
+End of test file.

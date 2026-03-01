@@ -1,0 +1,61 @@
+---
+title: "knugo Test File"
+---
+
+# knugo Test File
+
+This document serves as a test case for the **knugo** package, demonstrating
+how various output types are rendered for a Hugo-centric workflow.
+
+## 1. HTML Widget Example
+
+Below is an example using an HTML widget (e.g., from the **DT** package).g
+
+```{r htmlwidget-example, echo=FALSE}
+# Load DT package (make sure it's in your package dependencies)
+library(DT)
+# Create a simple interactive data table
+datatable(iris)
+```
+
+## 2. Table Example with kable
+
+Here we generate a table using `knitr::kable()` to display the first few rows
+of the `mtcars` dataset.
+
+```{r kable-table, echo=TRUE}
+library(knitr)
+# Create a table with a caption
+kable(head(mtcars), caption = "Table: First 6 rows of mtcars")
+```
+
+## 3. ggplot2 Plot Example using svglite
+
+This chunk creates a **ggplot2** plot rendered with **svglite**. The plot is
+produced as an SVG image.
+
+```{r ggplot-svglite, fig.width=6, fig.height=4, echo=TRUE}
+library(ggplot2)
+# Create a scatter plot of mpg vs weight
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  ggtitle("Scatterplot of mpg vs. weight")
+print(p)
+```
+
+## 4. Code Example
+
+A simple R code chunk that computes the sum of the first 10 natural numbers.
+
+```{r code-demo, echo=TRUE}
+# Calculate the sum of numbers 1 through 10
+result <- sum(1:10)
+result
+```
+
+## 5. Inline Code Example
+
+You can also include inline R code. For instance, the sum of 1 through 10 is
+`r sum(1:10)`.
+
+```
