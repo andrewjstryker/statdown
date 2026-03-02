@@ -1,4 +1,4 @@
-# statdown
+# statdown ![statdown hex logo](statdown-hex.png)
 
 **Use R in your static site — without replacing your static site
 generator.**
