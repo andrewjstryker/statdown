@@ -1,4 +1,4 @@
-# statdown
+# statdown <img src="statdown-hex.png" align="right" height="139" alt="statdown hex logo" />
 
 **Use R in your static site — without replacing your static site generator.**
 
