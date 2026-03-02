@@ -43,26 +43,21 @@ Markdown your SSG already understands.
 ### Comparing approaches
 
 ``` mermaid
-flowchart LR
+flowchart TB
 
-    subgraph K[statdown]
-    A1(.Rmd) --> A2(knitr)
-    A2 --> A3(.md)
-    A3 --> A4(SSG)
-    A4 --> A5(Site)
+    subgraph K["statdown"]
+    direction LR
+    A1(.Rmd) --> A2(knitr) --> A3(.md) --> A4(SSG) --> A5(Site)
     end
 
-    subgraph B[blogdown]
-    B1(.Rmd) --> B2(knitr)
-    B2 --> B3(Pandoc)
-    B3 --> B4(Hugo)
-    B4 --> B5(Site)
+    subgraph B["blogdown"]
+    direction LR
+    B1(.Rmd) --> B2(knitr) --> B3(Pandoc) --> B4(Hugo) --> B5(Site)
     end
 
-    subgraph Q[Quarto]
-    Q1(.qmd) --> Q2(knitr)
-    Q2 --> Q3(Pandoc)
-    Q3 --> Q4(Site)
+    subgraph Q["Quarto"]
+    direction LR
+    Q1(.qmd) --> Q2(knitr) --> Q3(Pandoc) --> Q4(Site)
     end
 ```
 

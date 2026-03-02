@@ -76,26 +76,21 @@
 <div class="section level3">
 <h3 id="comparing-approaches">Comparing approaches<a class="anchor" aria-label="anchor" href="#comparing-approaches"></a>
 </h3>
-<pre class="mermaid"><code>flowchart LR
+<pre class="mermaid"><code>flowchart TB
 
-    subgraph K[statdown]
-    A1(.Rmd) --&gt; A2(knitr)
-    A2 --&gt; A3(.md)
-    A3 --&gt; A4(SSG)
-    A4 --&gt; A5(Site)
+    subgraph K["statdown"]
+    direction LR
+    A1(.Rmd) --&gt; A2(knitr) --&gt; A3(.md) --&gt; A4(SSG) --&gt; A5(Site)
     end
 
-    subgraph B[blogdown]
-    B1(.Rmd) --&gt; B2(knitr)
-    B2 --&gt; B3(Pandoc)
-    B3 --&gt; B4(Hugo)
-    B4 --&gt; B5(Site)
+    subgraph B["blogdown"]
+    direction LR
+    B1(.Rmd) --&gt; B2(knitr) --&gt; B3(Pandoc) --&gt; B4(Hugo) --&gt; B5(Site)
     end
 
-    subgraph Q[Quarto]
-    Q1(.qmd) --&gt; Q2(knitr)
-    Q2 --&gt; Q3(Pandoc)
-    Q3 --&gt; Q4(Site)
+    subgraph Q["Quarto"]
+    direction LR
+    Q1(.qmd) --&gt; Q2(knitr) --&gt; Q3(Pandoc) --&gt; Q4(Site)
     end</code></pre>
 </div>
 </div>
