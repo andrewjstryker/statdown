@@ -18,3 +18,4 @@
 ^example-.*\.Rmd$
 ^tools$
 ^\.claude$
+^LICENSE\.md$
