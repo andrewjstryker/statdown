@@ -65,7 +65,15 @@ statdown_render <- function(input, output_root = NULL, url_root = NULL,
     css_tags <- depkit::emit_css(dm)
     js_tags <- depkit::emit_js(dm)
 
-    final <- c(css_tags, "", md_content, "", js_tags)
+    # Insert CSS after YAML front matter so Hugo can parse it
+    fm_end <- find_front_matter_end(md_content)
+    if (fm_end > 0L) {
+      before <- md_content[seq_len(fm_end)]
+      after  <- md_content[-seq_len(fm_end)]
+      final  <- c(before, "", css_tags, "", after, "", js_tags)
+    } else {
+      final <- c(css_tags, "", md_content, "", js_tags)
+    }
     writeLines(final, output)
   }
 
@@ -115,6 +123,22 @@ statdown_knit_render <- function(x, options, ...) {
   } else {
     knitr::knit_print(x, options = options, ...)
   }
+}
+
+#' Find the closing line of YAML front matter
+#'
+#' Looks for a document that starts with `---` and returns the line number
+#' of the matching closing `---`. Returns 0 if no front matter is found.
+#'
+#' @param lines Character vector of file lines.
+#' @return Integer line number of the closing `---`, or 0.
+#' @keywords internal
+find_front_matter_end <- function(lines) {
+  if (length(lines) < 2L || !grepl("^---\\s*$", lines[1L])) return(0L)
+  for (i in seq(2L, length(lines))) {
+    if (grepl("^---\\s*$", lines[i])) return(i)
+  }
+  0L
 }
 
 validate <- function(input) {
